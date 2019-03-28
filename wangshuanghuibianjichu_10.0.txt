@@ -1,0 +1,60 @@
+assume ds:datasg,cs:codesg,ss:stagesg
+datasg segment
+ db 'welcome to masm!',0
+datasg ends
+stagesg segment
+ dw 0,0,0,0
+stagesg ends
+codesg segment
+here: 
+      
+      call multwice
+      mov ax,datasg
+      mov ds,ax
+      mov ax,stagesg
+      mov ss,ax
+      mov sp,8
+      mov ah,0B0h
+      mov al,dh
+      mov cx,3
+      mov bx,10h
+      mov dh,0
+ s:
+     mov es,ax
+     push cx
+     push ax
+     mov cx,16
+     mov di,dx
+     mov si,0
+s0: 
+mov ax,ds:[si]
+mov cl,al
+mov ch,0
+jcxz ok
+mov es:[di],ax
+    mov ax,ds:[bx]
+mov es:[di+1],ax
+    add di,2
+        inc si
+loop s0
+ok:
+  pop ax
+  pop cx
+  add ax,015Ah
+ inc bx
+  loop s
+mov ax,4c00h
+int 21h
+ multwice:
+    mov al,dl
+    mov ah,0
+    mov bx,2h
+    mul bx
+    mov dl,al
+    mov ah,dh
+    mov al,0
+    mov bx,0Ah
+    mul bx
+    mov dh,ah
+codesg ends
+end here

@@ -1,0 +1,61 @@
+assume ds:datasg,cs:codesg,ss:stagesg
+datasg segment
+ db 'welcome to masm!',0
+ db 00000001B,00000010B,00000100B
+datasg ends
+stagesg segment
+ dw 0,0,0,0
+stagesg ends
+codesg segment
+start: mov dh,8
+       mov dl,3
+       mov cl,2
+       mov ax,datasg
+       mov ds,ax
+       mov si,0
+       call show_str
+      mov ax,4c00h
+      int 21h
+show_str: 
+       call multwice
+       mov ax,datasg
+       mov ds,ax
+       mov ax,stagesg
+       mov ss,ax
+       mov sp,8    
+       mov ah,0B0h
+       mov al,dh   
+       mov es,ax
+       mov bx,11h
+       mov ch,0
+       add bx,cx
+       mov dh,0
+       mov di,dx 
+       mov si,0  
+s0: 
+     mov ax,ds:[si]
+     mov cl,al
+     mov ch,0
+     jcxz ok
+     mov es:[di],ax
+     mov ax,ds:[bx]
+     mov es:[di+1],ax
+     add di,2
+      inc si
+    jmp near ptr s0
+ok:
+     ret
+multwice:
+    mov al,dl
+    mov ah,0
+    mov bx,2h
+    mul bx
+    mov dl,al
+    mov ah,dh
+    mov al,0
+    mov bx,0Ah
+    mul bx
+    mov dh,ah  
+    ret
+codesg ends
+end start

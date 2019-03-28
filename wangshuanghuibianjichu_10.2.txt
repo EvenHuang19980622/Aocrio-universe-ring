@@ -1,0 +1,33 @@
+assume cs:codesg,ss:stagesg
+stagesg segment
+ dw 0,0,0,0
+stagesg ends
+
+codesg segment
+ 
+here: mov ax,stagesg
+ mov ss,ax
+ mov sp,8
+ mov ax,4240h
+ mov dx,000fh
+ mov cx,0ah
+ call divdw
+ mov ax,4c00h
+ int 21h
+
+
+divdw:
+  push ax
+  mov ax,dx
+  push dx
+  mov dx,0000h
+  div cx
+  mov bx,ax
+  pop ax
+  div cx 
+  mov cx,dx
+  mov dx,bx
+ret
+
+codesg ends
+end here
